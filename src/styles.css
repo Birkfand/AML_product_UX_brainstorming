@@ -1,0 +1,136 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+@import "@xyflow/react/dist/style.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-state-idle: var(--state-idle);
+  --color-state-active: var(--state-active);
+  --color-state-complete: var(--state-complete);
+  --color-state-alert: var(--state-alert);
+  --color-state-ai: var(--state-ai);
+  --color-state-warn: var(--state-warn);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+:root {
+  --radius: 0.625rem;
+  /* Force dark dashboard look regardless of system pref */
+  --background: oklch(0.17 0.02 265);
+  --foreground: oklch(0.97 0.005 250);
+  --card: oklch(0.21 0.02 265);
+  --card-foreground: oklch(0.97 0.005 250);
+  --popover: oklch(0.19 0.02 265);
+  --popover-foreground: oklch(0.97 0.005 250);
+  --primary: oklch(0.65 0.18 255);
+  --primary-foreground: oklch(0.98 0.005 250);
+  --secondary: oklch(0.27 0.02 265);
+  --secondary-foreground: oklch(0.97 0.005 250);
+  --muted: oklch(0.25 0.02 265);
+  --muted-foreground: oklch(0.7 0.02 260);
+  --accent: oklch(0.28 0.03 265);
+  --accent-foreground: oklch(0.97 0.005 250);
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.98 0.005 250);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.6 0.15 255);
+
+  /* Domain state tokens */
+  --state-idle: oklch(0.6 0.015 260);                /* grey */
+  --state-active: oklch(0.65 0.18 255);              /* #3B82F6 blue */
+  --state-complete: oklch(0.7 0.16 160);             /* #10B981 green */
+  --state-alert: oklch(0.65 0.23 25);                /* #EF4444 red */
+  --state-warn: oklch(0.78 0.16 75);                 /* amber */
+  --state-ai: oklch(0.68 0.2 295);                   /* #8B5CF6 purple */
+
+  --canvas: oklch(0.16 0.02 265);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  * { border-color: var(--color-border); }
+  body {
+    background-color: var(--canvas);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .aml-grid-bg {
+    background-color: var(--canvas);
+    background-image:
+      radial-gradient(circle at 1px 1px, oklch(1 0 0 / 0.06) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+  .glass-card {
+    background: linear-gradient(180deg, oklch(0.24 0.02 265 / 0.7), oklch(0.2 0.02 265 / 0.7));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: oklch(1 0 0 / 0.1); border-radius: 3px;
+  }
+}
+
+/* React Flow dark theme tweaks */
+.react-flow__attribution { display: none; }
+.react-flow__controls {
+  background: oklch(0.2 0.02 265 / 0.9);
+  border: 1px solid oklch(1 0 0 / 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.react-flow__controls-button {
+  background: transparent;
+  color: var(--foreground);
+  border-bottom: 1px solid oklch(1 0 0 / 0.06);
+}
+.react-flow__controls-button:hover { background: oklch(1 0 0 / 0.05); }
+.react-flow__controls-button svg { fill: var(--foreground); }
+.react-flow__minimap {
+  background: oklch(0.18 0.02 265 / 0.9) !important;
+  border: 1px solid oklch(1 0 0 / 0.08);
+  border-radius: 8px;
+}
+.react-flow__handle {
+  background: oklch(0.65 0.18 255);
+  border: 2px solid oklch(0.18 0.02 265);
+  width: 8px; height: 8px;
+}
+
+@keyframes dash-flow {
+  to { stroke-dashoffset: -24; }
+}
+.edge-animated { animation: dash-flow 1s linear infinite; }
