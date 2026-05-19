@@ -107,17 +107,21 @@ flowchart LR
 
 ### 4. Periodic Renewal
 > Tone: routine  
-> 12 months in, Angela's annual review is triggered. KYC questions are re-sent, name screening is re-run against updated lists, and CRR is recalculated with her latest transaction history. AI checks for risk drift. Everything is confirmed low-risk.
+> The AML client fires a compliance rule that sets Angela's status to F – Fornyelse (renewal required). She is notified in her mobile bank. A KYC Case opens and orchestrates the checks. An adviser reviews her answers before CRR recalculates. AI scans for risk drift. On the happy path the case closes with AML-status G – Godkjent. If issues are found, the case stays open and the adviser follows up (AML-status E – Under behandling).
 
 ```mermaid
 flowchart LR
-    A([12-month cycle reached]) --> B[KYC Case Management\nreview opened]
-    B --> C[Identity & KYC\n8 renewal questions]
+    A([AML client fires rule\nAML-status: F – Fornyelse]) --> B[Customer notified\nin mobile bank\nFornyelse må gjennomføres]
+    B --> C[KYC Case Management\ncase opened · drives all checks]
     C --> D[Name Screening\nre-run vs latest lists]
-    D -->|No new hits| E[Risk Scoring\nrecalculating with\nlatest transactions]
-    E --> F[AI Layer\nchecking for risk drift]
-    F -->|No drift| G([Review complete\nprofile confirmed])
-    F -->|Drift detected| H([Escalate to reviewer])
+    C --> E[Identity & KYC\n8 renewal questions\nsent to Angela]
+    D -->|No new hits| F[Adviser reviews\nupdated answers]
+    E --> F
+    F --> G[Risk Scoring\nrecalculating with\nupdated answers]
+    G --> H[AI Layer\nchecking for risk drift]
+    H --> outcome{Outcome}
+    outcome -->|No change\nAML-status: G – Godkjent| I([KYC Case closed\nprofile confirmed ✓])
+    outcome -->|Drift or issues\nAML-status: E – Under behandling| J([Case stays open\nadviser follows up])
 ```
 
 ---

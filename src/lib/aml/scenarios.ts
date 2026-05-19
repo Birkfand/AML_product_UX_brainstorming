@@ -183,6 +183,7 @@ export const scenarios: Record<Scenario["id"], Scenario> = {
     label: "Periodic Renewal",
     tone: "ok",
     steps: [
+      // Angela is already an established customer — all onboarding nodes complete
       {
         delayMs: 0,
         nodeUpdates: { onboarding: "complete", kyc: "complete", nameScreening: "complete", crr: "complete", tm: "complete" },
@@ -191,26 +192,31 @@ export const scenarios: Record<Scenario["id"], Scenario> = {
           "crr-tm": true, "kyc-tm": true,
         },
         statusText: { tm: "ongoing monitoring" },
-        log: { level: "trigger", text: "Periodic review triggered — Customer #2210 (12-month cycle)" },
+        log: { level: "trigger", text: "AML client rule triggered — AML-status set to F – Fornyelse (Customer #2210)" },
       },
+      // Customer is notified in the mobile bank — renewal must be completed
       {
         delayMs: 800,
+        log: { level: "processing", text: "Customer notified in mobile bank — Fornyelse må gjennomføres (deferral available)" },
+      },
+      // KYC Case opens and immediately orchestrates CRR + name screening
+      {
+        delayMs: 900,
         nodeUpdates: { kycCase: "active" },
         edgeUpdates: { "tm-kycCase": true },
-        statusText: { kycCase: "review scheduled" },
-        log: { level: "processing", text: "KYC Case Management periodic review opened — review interval reached" },
+        statusText: { kycCase: "F – Fornyelse · running checks" },
+        log: { level: "processing", text: "KYC Case opened — initiating CRR recalculation and name screening" },
       },
+      // Name screening and KYC questionnaire run in parallel (KYC Case drives both)
       {
-        delayMs: 900,
-        nodeUpdates: { kyc: "processing" },
-        statusText: { kyc: "sending 8 renewal questions" },
-        log: { level: "processing", text: "KYC periodic questionnaire dispatched — 8 questions sent" },
-      },
-      {
-        delayMs: 900,
-        nodeUpdates: { nameScreening: "processing" },
-        statusText: { nameScreening: "re-screening against latest lists" },
+        delayMs: 700,
+        nodeUpdates: { nameScreening: "processing", kyc: "processing" },
+        statusText: { nameScreening: "re-screening against latest lists", kyc: "8 renewal questions sent" },
         log: { level: "processing", text: "Name screening re-run — checking against updated PEP / sanctions lists" },
+      },
+      {
+        delayMs: 900,
+        log: { level: "processing", text: "KYC periodic questionnaire dispatched — 8 renewal questions sent to Angela" },
       },
       {
         delayMs: 1000,
@@ -218,17 +224,25 @@ export const scenarios: Record<Scenario["id"], Scenario> = {
         statusText: { nameScreening: "no new hits" },
         log: { level: "success", text: "Screening clear — no new hits on UN, EU, OFAC lists" },
       },
+      // Customer answers received — adviser reviews before CRR recalculates
       {
         delayMs: 800,
-        nodeUpdates: { kyc: "complete", crr: "processing" },
-        statusText: { crr: "recalculating with latest data" },
+        nodeUpdates: { kyc: "complete" },
+        statusText: { kyc: "answers received" },
+        log: { level: "processing", text: "Customer answers received — adviser reviewing updated information" },
+      },
+      {
+        delayMs: 900,
+        nodeUpdates: { crr: "processing" },
+        statusText: { crr: "recalculating with updated answers" },
         log: { level: "processing", text: "CRR recalculating — incorporating latest transaction behaviour" },
       },
+      // AI checks for risk drift across the updated profile
       {
         delayMs: 900,
         nodeUpdates: { ai: "active" },
         edgeUpdates: { "ai-kycCase": true },
-        statusText: { ai: "scoring for risk drift" },
+        statusText: { ai: "checking for risk drift" },
         log: { level: "processing", text: "AI Layer activated — checking for risk profile drift" },
       },
       {
@@ -237,11 +251,13 @@ export const scenarios: Record<Scenario["id"], Scenario> = {
         statusText: { crr: "score: LOW — unchanged", ai: "no drift detected" },
         log: { level: "success", text: "CRR confirmed — score remains LOW, no significant drift" },
       },
+      // Happy path: KYC Case closes automatically — AML-status G – Godkjent
+      // If drift or issues were found, case would stay open (AML-status E – Under behandling)
       {
         delayMs: 700,
         nodeUpdates: { kycCase: "complete" },
-        statusText: { kycCase: "review closed" },
-        log: { level: "success", text: "Periodic review complete — customer profile confirmed and updated" },
+        statusText: { kycCase: "AML-status: G – Godkjent" },
+        log: { level: "success", text: "Periodic review complete — AML-status: G – Godkjent, profile confirmed" },
       },
     ],
   },

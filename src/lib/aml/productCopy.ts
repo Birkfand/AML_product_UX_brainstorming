@@ -316,12 +316,15 @@ const rewrites: Array<[RegExp, string]> = [
   [/^Name screening re-run.*$/i, "We re-check Angela's name against the latest sanctions lists"],
   [/^Screening clear.*$/i, "No flags found — Angela isn't on any watchlist"],
   [/^Name screening HIT.*PEP.*$/i, "Angela's name matches a politically exposed person list"],
-  [/^Periodic review triggered.*$/i, "Time for Angela's annual check-in — we review her profile"],
-  [/^CLM periodic review opened.*$/i, "A case manager opens Angela's periodic review"],
+  [/^AML client rule triggered.*Fornyelse.*$/i, "Our compliance engine flags Angela — annual renewal required"],
+  [/^Customer notified.*Fornyelse.*$/i, "Angela sees a renewal prompt in her mobile bank"],
+  [/^KYC Case opened.*initiating.*$/i, "A renewal case opens and kicks off checks automatically"],
   [/^KYC periodic questionnaire.*$/i, "We send Angela a short set of renewal questions"],
+  [/^Customer answers received.*$/i, "Angela's answers are in — an adviser checks the updated details"],
   [/^CRR recalculating.*transaction.*$/i, "We re-check Angela's risk score using her latest activity"],
   [/^AI Layer activated.*drift.*$/i, "AI checks whether Angela's risk profile has changed"],
   [/^CRR confirmed.*LOW.*$/i, "Angela's risk score is still low — no changes needed"],
+  [/^Periodic review complete.*Godkjent.*$/i, "Annual review done — AML status confirmed: Godkjent ✓"],
   [/^Periodic review complete.*$/i, "Angela's annual review is done — all clear"],
 ];
 
