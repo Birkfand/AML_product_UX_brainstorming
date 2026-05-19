@@ -98,8 +98,10 @@ export function exitReady(state: FlowState): boolean {
   // Only the standard scenario fully completes onto exit
   if (!state.activeScenario) return false;
   if (state.activeScenario !== "standard") return false;
+  // TM is a continuous monitor — it never "completes" for a new customer.
+  // Monitoring running (active) + all onboarding checks done is sufficient to exit.
   return (
-    state.nodeStates.tm === "complete" &&
+    (state.nodeStates.tm === "active" || state.nodeStates.tm === "complete") &&
     state.nodeStates.crr === "complete" &&
     state.nodeStates.kyc === "complete"
   );

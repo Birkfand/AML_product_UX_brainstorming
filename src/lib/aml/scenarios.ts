@@ -44,19 +44,13 @@ export const scenarios: Record<Scenario["id"], Scenario> = {
         delayMs: 700,
         log: { level: "success", text: "Customer onboarded — account created" },
       },
-      // TM activates only now — account is live and the customer can start transacting
+      // TM activates only now — account is live, monitoring begins but nothing to check yet
       {
         delayMs: 800,
-        nodeUpdates: { tm: "processing" },
+        nodeUpdates: { tm: "active" },
         edgeUpdates: { "kyc-tm": true, "crr-tm": true },
-        statusText: { tm: "account live — watching for activity" },
+        statusText: { tm: "monitoring active — no transactions yet" },
         log: { level: "processing", text: "Transaction monitoring activated — account live, no transactions yet" },
-      },
-      {
-        delayMs: 1100,
-        nodeUpdates: { tm: "complete" },
-        statusText: { tm: "monitoring active" },
-        log: { level: "success", text: "TM running — monitoring active, no alerts" },
       },
     ],
   },
