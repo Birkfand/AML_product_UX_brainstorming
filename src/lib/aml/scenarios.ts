@@ -16,7 +16,7 @@ export const scenarios: Record<Scenario["id"], Scenario> = {
       {
         delayMs: 900,
         nodeUpdates: { onboarding: "complete", kyc: "processing" },
-        edgeUpdates: { "kyc-nameScreening": true, "kyc-tm": true },
+        edgeUpdates: { "kyc-nameScreening": true },
         statusText: { kyc: "dispatching 12 questions" },
         log: { level: "success", text: "KYC QA triggered — 12 questions dispatched" },
       },
@@ -29,25 +29,34 @@ export const scenarios: Record<Scenario["id"], Scenario> = {
       {
         delayMs: 800,
         nodeUpdates: { nameScreening: "complete", crr: "processing" },
-        edgeUpdates: { "nameScreening-crr": true, "crr-tm": true },
+        edgeUpdates: { "nameScreening-crr": true },
         statusText: { nameScreening: "no hits", crr: "calculating risk" },
         log: { level: "success", text: "Screening clear — no hits on any sanctions list" },
       },
       {
         delayMs: 900,
-        nodeUpdates: { crr: "complete", tm: "processing" },
-        statusText: { crr: "score: LOW", tm: "evaluating transactions" },
+        nodeUpdates: { crr: "complete" },
+        statusText: { crr: "score: LOW" },
         log: { level: "success", text: "CRR complete — score: LOW" },
+      },
+      // Onboarding complete — customer is welcomed before TM starts
+      {
+        delayMs: 700,
+        log: { level: "success", text: "Customer onboarded — account created" },
+      },
+      // TM activates only now — account is live and the customer can start transacting
+      {
+        delayMs: 800,
+        nodeUpdates: { tm: "processing" },
+        edgeUpdates: { "kyc-tm": true, "crr-tm": true },
+        statusText: { tm: "account live — watching for activity" },
+        log: { level: "processing", text: "Transaction monitoring activated — account live, no transactions yet" },
       },
       {
         delayMs: 1100,
         nodeUpdates: { tm: "complete" },
-        statusText: { tm: "no alerts" },
-        log: { level: "success", text: "TM clear — no rule violations" },
-      },
-      {
-        delayMs: 700,
-        log: { level: "success", text: "Customer onboarded — flow complete" },
+        statusText: { tm: "monitoring active" },
+        log: { level: "success", text: "TM running — monitoring active, no alerts" },
       },
     ],
   },

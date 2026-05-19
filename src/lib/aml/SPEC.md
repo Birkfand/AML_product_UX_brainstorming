@@ -68,8 +68,9 @@ flowchart LR
     A([Angela applies]) --> B[Identity & KYC\n12 questions]
     B --> C[Name Screening\nUN · EU · OFAC]
     C -->|No hits| D[Risk Scoring\nscore: LOW]
-    D --> E[Transaction Monitoring\nno alerts]
-    E --> F([Angela onboarded ✓])
+    D --> E([Angela onboarded ✓\naccount created])
+    E --> F[Transaction Monitoring\naccount live · monitoring begins]
+    F --> G([Monitoring active\nno transactions yet])
 ```
 
 ---
